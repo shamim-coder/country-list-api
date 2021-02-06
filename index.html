@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST Countries</title>
+
+    <style>
+        *{
+            font-family:monospace
+        }
+        .single {
+            display: none;
+        }
+
+        img.flag {
+            width: 300px;
+            border: 1px solid #333;
+            padding: 10px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+        }
+
+        .country {
+            border: 1px solid gray;
+            padding: 10px;
+            margin: 10px;
+            line-height: 2;
+            padding-bottom: 0;
+        }
+        h4, h5, p {
+            margin: 0;
+        }
+        h4{
+            font-size: 20px;
+        }
+        h5{
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="container-fluid">
+            <h2 class="text-center">Single Countries</h2>
+            <div id="row" class="row">
+
+            </div>
+            <div id="single" class="single">
+
+
+            </div>
+        </div>
+    </main>
+
+
+
+
+
+
+
+
+
+    <script>
+
+        const api = "https://restcountries.eu/rest/v2/all"
+        fetch(api)
+            .then((response) => response.json())
+            .then((data) => getAllCountries(data))
+
+
+        function back() {
+            let row = document.getElementById('row')
+            let single = document.getElementById('single')
+            row.style.display = "grid";
+            single.style.display = "none";
+        }
+        function details(name) {
+            const api = `https://restcountries.eu/rest/v2/name/${name}`
+            fetch(api)
+                .then((response) => response.json())
+                .then((data) => singleCountry(data))
+
+            function singleCountry(country) {
+                const { name, flag, nativeName, capital } = country[0]
+                let row = document.getElementById('row')
+                let single = document.getElementById('single')
+                row.style.display = "none";
+                single.style.display = "block";
+
+                const singleTemplate = `
+                <h2 class="text-center">Single Country</h2>
+                <h3>Country Name: ${name}</h3>
+                <h5>Native Name: ${nativeName}</h5>
+                <h5>Capital Name: ${capital}</h5>
+                <img class="flag" src="${flag}" alt="${name}"> <br>
+                <button onclick="back()">Back</button>
+                `
+                single.innerHTML = singleTemplate
+            }
+
+
+        }
+
+        function getAllCountries(data) {
+            let row = document.getElementById('row')
+
+            // const country = data.map(function (country) {
+
+
+            // })
+
+            data.forEach(country => {
+                const { name, flag, capital } = country
+                const countryDiv = document.createElement('div')
+                countryDiv.classList.add('country')
+
+                const htmlTemplate = `
+                <h4 class="card-title">Country Name: ${name}</h4>
+                <h5 class="card-title">Capital: ${capital}</h5>
+                <button onclick="details('${name}')" id="details">Details</button>
+                `;
+                countryDiv.innerHTML = htmlTemplate;
+                row.appendChild(countryDiv)
+            });
+
+
+
+        }
+
+
+
+    </script>
+</body>
+
+</html>
